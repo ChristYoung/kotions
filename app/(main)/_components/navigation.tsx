@@ -7,6 +7,7 @@ import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils'
 
 const Navigation: React.FC = () => {
+    
     const isMobile = useMediaQuery('(max-width: 768px)');
     const pathName = usePathname();
 
