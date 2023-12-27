@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
+import UserItem from './userItem';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -97,10 +98,9 @@ const Navigation: React.FC = () => {
                     <ChevronsLeft className='h-6 w-6' />
             </div>
             <div>
-                <p>Action items</p>
+                <UserItem />
             </div>
             <div className='mt-4'>
-                <p>isMobile: {JSON.stringify(isMobile)}</p>
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
