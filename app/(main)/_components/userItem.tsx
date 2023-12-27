@@ -38,15 +38,19 @@ const UserItem: React.FC = () => {
                                 <AvatarImage src={user?.imageUrl ?? ''} alt='' />
                             </Avatar>
                         </div>
+                        <div className='space-y-1'>
+                            <p className='text-sm line-clamp-1'>
+                                {user?.fullName}&apos;s Kotion
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <DropdownMenuSeparator>
-                    <DropdownMenuItem asChild className='w-full cursor-pointer text-muted-foreground'>
-                        <SignOutButton>
-                            Log Out
-                        </SignOutButton>
-                    </DropdownMenuItem>
-                </DropdownMenuSeparator>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild className='w-full cursor-pointer text-left text-sm px-3 text-muted-foreground'>
+                    <SignOutButton>
+                        Log Out
+                    </SignOutButton>
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     </div>;
