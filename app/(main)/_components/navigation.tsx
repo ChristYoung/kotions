@@ -2,9 +2,12 @@
 
 import { ChevronsLeft, MenuIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import { ElementRef, useRef, useState } from 'react';
+import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils';
+
+const MIN_WIDTH = 240;
+const MAX_WIDTH = 480;
 
 const Navigation: React.FC = () => {
     
@@ -17,8 +20,67 @@ const Navigation: React.FC = () => {
     const [isResetting, setIsResetting] = useState(false);
     const [isCollapsed, setIsCollapsed] = useState(isMobile);
 
-    const handleMouseDown = () => {};
-    const handleMouseClick = () => {};
+    useEffect(() => {
+        if (isMobile) {
+            collapse();
+        } else {
+            resetWidth();
+        }
+    }, [isMobile]);
+
+    useEffect(() => {
+        if (isMobile) {
+            collapse();
+        }
+    }, [pathName]);
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizingRef.current = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp)
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+        if (!isResizingRef.current) return;
+        let newWidth = e.clientX;
+        if (newWidth < MIN_WIDTH) newWidth = MIN_WIDTH;
+        if (newWidth > MAX_WIDTH) newWidth = MAX_WIDTH;
+        if (sideBarRef.current && navBarRef.current) {
+            sideBarRef.current.style.width = `${newWidth}px`;
+            navBarRef.current.style.setProperty('left', `${newWidth}px`);
+            navBarRef.current.style.setProperty('width', `calc(100% - ${newWidth}px)`);
+        }
+    };
+
+    const handleMouseUp = (e: MouseEvent) => {
+        isResizingRef.current = false;
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    const resetWidth = () => {
+        if (sideBarRef.current && navBarRef.current) {
+            setIsCollapsed(false);
+            setIsResetting(true);
+            sideBarRef.current.style.width = isMobile ? '100%' : `${MIN_WIDTH}px`;
+            navBarRef.current.style.setProperty('width', isMobile ? '0' : `calc(100% - ${MIN_WIDTH}px)`);
+            navBarRef.current.style.setProperty('left', `${isMobile ? '100%' : MIN_WIDTH}px`);
+            setTimeout(() => setIsResetting(false), 300);
+        }
+    };
+        
+    const collapse = () => {
+        if (sideBarRef.current && navBarRef.current) {
+            setIsCollapsed(true);
+            setIsResetting(true);
+            sideBarRef.current.style.width = '0';
+            navBarRef.current.style.setProperty('width', '100%');
+            navBarRef.current.style.setProperty('left', '0');
+            setTimeout(() => setIsResetting(false), 300);
+        }
+    };
 
     return <>
         <aside ref={sideBarRef} className={cn(
@@ -26,7 +88,9 @@ const Navigation: React.FC = () => {
                 isResetting && "transition-all ease-in-out duration-300",
                 isMobile && "w-0",
             )}>
-            <div role='button' className={cn(
+            <div 
+                onClick={collapse}
+                role='button' className={cn(
                     "h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover:opacity-100 transition",
                     isMobile && "opacity-100",
                 )}>
@@ -40,8 +104,8 @@ const Navigation: React.FC = () => {
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
-                onMouseDown={() => {}}
-                onClick={() => {}}
+                onMouseDown={handleMouseDown}
+                onClick={resetWidth}
                 className='opacity-0 group-hover:opacity-100
                 transition cursor-ew-resize
                 absolute h-full w-1 bg-primary/10 right-0 top-0' />
@@ -52,7 +116,7 @@ const Navigation: React.FC = () => {
             isMobile && "left-0 w-full",
         )}>
             <nav className='bg-transparent px-3 py-2 w-full'>
-                {isCollapsed && <MenuIcon role='button' className='h-6 w-6 text-muted-foreground'></MenuIcon>}
+                {isCollapsed && <MenuIcon onClick={resetWidth} role='button' className='h-6 w-6 text-muted-foreground'></MenuIcon>}
             </nav>
         </div>
     </>;
