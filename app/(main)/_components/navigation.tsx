@@ -1,15 +1,15 @@
 "use client";
 
-import { ChevronsLeft, MenuIcon, PlusCircle } from 'lucide-react';
+import { api } from '@/convex/_generated/api';
+import { cn } from '@/lib/utils';
+import { useMutation } from 'convex/react';
+import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
-import { useMediaQuery } from 'usehooks-ts';
-import { cn } from '@/lib/utils';
-import UserItem from './userItem';
-import { useMutation, useQuery } from 'convex/react';
-import { api } from '@/convex/_generated/api';
-import { Item } from './item';
 import { toast } from 'sonner';
+import { useMediaQuery } from 'usehooks-ts';
+import { Item } from './item';
+import UserItem from './userItem';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -18,7 +18,6 @@ const Navigation: React.FC = () => {
     
     const isMobile = useMediaQuery('(max-width: 768px)');
     const pathName = usePathname();
-    const documents = useQuery(api.documents.getDocuments);
     const create = useMutation(api.documents.create);
 
     const isResizingRef = useRef(false);
@@ -117,10 +116,11 @@ const Navigation: React.FC = () => {
             </div>
             <div>
                 <UserItem />
+                <Item label='Search' icon={Search} isSearch />
+                <Item label='Settings' icon={Settings} />
                 <Item onClick={onCreate} label='New page' icon={PlusCircle} />
             </div>
             <div className='mt-4'>
-                {documents?.map(d => <p key={d._id}>{d.title}</p>)}
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
