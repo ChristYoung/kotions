@@ -1,11 +1,15 @@
 "use client";
 
-import { ChevronsLeft, MenuIcon } from 'lucide-react';
+import { ChevronsLeft, MenuIcon, PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 import UserItem from './userItem';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Item } from './item';
+import { toast } from 'sonner';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -14,6 +18,8 @@ const Navigation: React.FC = () => {
     
     const isMobile = useMediaQuery('(max-width: 768px)');
     const pathName = usePathname();
+    const documents = useQuery(api.documents.getDocuments);
+    const create = useMutation(api.documents.create);
 
     const isResizingRef = useRef(false);
     const sideBarRef = useRef<ElementRef<'aside'>>(null);
@@ -83,6 +89,18 @@ const Navigation: React.FC = () => {
         }
     };
 
+    const onCreate = () => {
+        const createPromise = create({
+            title: 'New note',
+        });
+        toast.promise(createPromise, {
+            loading: 'Creating...',
+            success: 'New Note created!',
+            error: 'Error creating note.',
+            duration: 2000
+        });
+    }
+
     return <>
         <aside ref={sideBarRef} className={cn(
                 "group h-full bg-secondary overflow-y-auto relative flex w-60 flex-col z-[99999]",
@@ -99,8 +117,10 @@ const Navigation: React.FC = () => {
             </div>
             <div>
                 <UserItem />
+                <Item onClick={onCreate} label='New page' icon={PlusCircle} />
             </div>
             <div className='mt-4'>
+                {documents?.map(d => <p key={d._id}>{d.title}</p>)}
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
