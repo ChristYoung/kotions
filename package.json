@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "convex:dev": "npx convex dev"
   },
   "dependencies": {
     "@clerk/clerk-react": "^4.30.0",

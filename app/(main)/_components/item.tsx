@@ -1,5 +1,6 @@
 "use client"
 
+import { Skeleton } from '@/components/ui/skeleton';
 import { Id } from '@/convex/_generated/dataModel';
 import { cn } from '@/lib/utils';
 import { LucideIcon, ChevronDown, ChevronRight } from 'lucide-react';
@@ -16,7 +17,7 @@ export interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
     onExpand?: () => void;
 }
 
-export const Item: React.FC<ItemProps> = (props: ItemProps) => {
+export const Item = (props: ItemProps) => {
     const { label, icon: Icon, onClick, active, id,
         documentIcon, level = 0, isSearch, expanded, onExpand } = props;
     
@@ -47,4 +48,13 @@ export const Item: React.FC<ItemProps> = (props: ItemProps) => {
                     </kbd>
                 )}
             </div>;
+};
+
+Item.Skeleton = function ItemSkeleton({level}: {level?: number}) {
+    return (
+        <div style={{paddingLeft: level ? `${level * 12 + 25}px` : '12px'}} className='flex gap-x-2 py-[3px]'>
+            <Skeleton className='h-4 w-4' />
+            <Skeleton className='h-4 w-[30%]' />
+        </div>
+    )
 };

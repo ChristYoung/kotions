@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
 import UserItem from './userItem';
+import { DocumentList } from './documentList';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -121,6 +122,7 @@ const Navigation: React.FC = () => {
                 <Item onClick={onCreate} label='New page' icon={PlusCircle} />
             </div>
             <div className='mt-4'>
+                <DocumentList />
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
