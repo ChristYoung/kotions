@@ -3,7 +3,7 @@
 import { api } from '@/convex/_generated/api';
 import { cn } from '@/lib/utils';
 import { useMutation } from 'convex/react';
-import { ChevronsLeft, MenuIcon, PlusCircle, Search, Settings } from 'lucide-react';
+import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -123,6 +123,7 @@ const Navigation: React.FC = () => {
             </div>
             <div className='mt-4'>
                 <DocumentList />
+                <Item onClick={onCreate} icon={Plus} label='Add a page' />
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
