@@ -1,9 +1,13 @@
 "use client"
 
 import { Skeleton } from '@/components/ui/skeleton';
+import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import { cn } from '@/lib/utils';
-import { LucideIcon, ChevronDown, ChevronRight } from 'lucide-react';
+import { useMutation } from 'convex/react';
+import { ChevronDown, ChevronRight, LucideIcon, Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export interface ItemProps extends React.HTMLAttributes<HTMLDivElement> {
     id?: Id<'documents'>;
@@ -21,6 +25,35 @@ export const Item = (props: ItemProps) => {
     const { label, icon: Icon, onClick, active, id,
         documentIcon, level = 0, isSearch, expanded, onExpand } = props;
     
+    const create = useMutation(api.documents.create);
+    const router = useRouter();
+
+    const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        e.preventDefault();
+        onExpand?.();
+    };
+
+    const onCreate = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.stopPropagation();
+        if (!id) return;
+        const createPromise = create({
+            title: 'New Note',
+            parentDocument: id,
+        }).then(docId => {
+            if (!expanded) {
+                onExpand?.();
+            }
+            // router.push(`/documents/${docId}`);
+        });
+        toast.promise(createPromise, {
+            loading: 'Creating...',
+            success: 'Created!',
+            error: 'Error creating document.',
+            duration: 2000,
+        });
+    };
+
     const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
     return <div onClick={(e) => onClick && onClick(e)} role='button'
@@ -32,7 +65,7 @@ export const Item = (props: ItemProps) => {
             >
                 {!!id && (
                     <div role='button' className='h-full rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1'
-                    onClick={() => {}}>
+                    onClick={handleExpand}>
                         <ChevronIcon className='h-4 w-4 shrink-0 text-muted-foreground/50' />
                     </div>
                 )}
@@ -47,6 +80,18 @@ export const Item = (props: ItemProps) => {
                         <span className='text-xs'> ⌘</span> + K
                     </kbd>
                 )}
+                {
+                    !!id && (
+                        <div className='ml-auto flex items-center gap-x-2'>
+                            <div 
+                                role='button'
+                                onClick={onCreate}
+                                className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'>
+                                <Plus className='h-4 w-4 text-muted-foreground' />
+                            </div>
+                        </div>
+                    )
+                }
             </div>;
 };
 
