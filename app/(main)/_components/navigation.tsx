@@ -3,7 +3,7 @@
 import { api } from '@/convex/_generated/api';
 import { cn } from '@/lib/utils';
 import { useMutation } from 'convex/react';
-import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings } from 'lucide-react';
+import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { ElementRef, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -11,6 +11,7 @@ import { useMediaQuery } from 'usehooks-ts';
 import { Item } from './item';
 import UserItem from './userItem';
 import { DocumentList } from './documentList';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -118,12 +119,23 @@ const Navigation: React.FC = () => {
             <div>
                 <UserItem />
                 <Item label='Search' icon={Search} isSearch />
-                <Item label='Settings' icon={Settings} />
+                <Item label='Settings' icon={Settings} onClick={() => {}} />
                 <Item onClick={onCreate} label='New page' icon={PlusCircle} />
             </div>
             <div className='mt-4'>
                 <DocumentList />
                 <Item onClick={onCreate} icon={Plus} label='Add a page' />
+                <Popover>
+                    <PopoverTrigger className='w-full mt-4'>
+                        <Item icon={Trash} label='Trash' />
+                    </PopoverTrigger>
+                    <PopoverContent className='w-72 p-0'>
+                        <div className='p-4'>
+                            <h3 className='text-sm font-medium text-muted-foreground'>Trash</h3>
+                            <p className='text-sm text-muted-foreground'>Deleted pages are moved to the trash. You can restore them or permanently delete them.</p>
+                        </div>
+                    </PopoverContent>
+                </Popover>
             </div>
             {/* Hover over the side bar to expand or collapse the aside. */}
             <div 
