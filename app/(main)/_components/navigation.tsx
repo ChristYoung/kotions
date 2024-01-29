@@ -12,6 +12,7 @@ import { Item } from './item';
 import UserItem from './userItem';
 import { DocumentList } from './documentList';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { TrashBox } from './TrashBox';
 
 const MIN_WIDTH = 240;
 const MAX_WIDTH = 480;
@@ -129,11 +130,8 @@ const Navigation: React.FC = () => {
                     <PopoverTrigger className='w-full mt-4'>
                         <Item icon={Trash} label='Trash' />
                     </PopoverTrigger>
-                    <PopoverContent className='w-72 p-0'>
-                        <div className='p-4'>
-                            <h3 className='text-sm font-medium text-muted-foreground'>Trash</h3>
-                            <p className='text-sm text-muted-foreground'>Deleted pages are moved to the trash. You can restore them or permanently delete them.</p>
-                        </div>
+                    <PopoverContent className='w-72 p-0' side={ isMobile ? 'bottom' : 'right' }>
+                        <TrashBox />
                     </PopoverContent>
                 </Popover>
             </div>
